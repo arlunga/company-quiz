@@ -102,6 +102,13 @@
     font-weight: 600;
     margin-bottom: 20px;
   }
+  .hl {
+    background: rgba(251, 191, 36, 0.25);
+    color: #fde047;
+    font-weight: 700;
+    padding: 0 4px;
+    border-radius: 4px;
+  }
   .options {
     display: flex;
     flex-direction: column;
@@ -325,6 +332,11 @@
     return a;
   }
 
+  function highlightKeywords(text) {
+    return text.replace(/\b(cannot|can't|not|except|never)\b/gi,
+      '<span class="hl">$&</span>');
+  }
+
   function getHistory() {
     try {
       return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
@@ -375,7 +387,7 @@
     document.getElementById("score").textContent = score;
     document.getElementById("progress-bar").style.width =
       `${(currentIndex / currentQuestions.length) * 100}%`;
-    document.getElementById("question-text").textContent = q.q;
+    document.getElementById("question-text").innerHTML = highlightKeywords(q.q);
 
     const explanationEl = document.getElementById("explanation");
     explanationEl.classList.add("hidden");
