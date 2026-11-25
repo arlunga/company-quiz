@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Company Knowledge Quiz</title>
+<style>
+  :root {
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --accent: #2563eb;
+    --accent-dark: #1d4ed8;
+    --correct: #16a34a;
+    --correct-bg: #ecfdf5;
+    --wrong: #dc2626;
+    --wrong-bg: #fef2f2;
+    --border: #e5e7eb;
+    --radius: 14px;
+    --shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    line-height: 1.5;
+  }
+  .app {
+    width: 100%;
+    max-width: 640px;
+  }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px;
+  }
+  h1 {
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 22px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.05s;
+  }
+  .btn:hover { background: var(--accent-dark); }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled { background: #c7d2fe; cursor: not-allowed; }
+  .btn.secondary {
+    background: #eef2ff;
+    color: var(--accent);
+  }
+  .btn.secondary:hover { background: #e0e7ff; }
+
+  /* Top bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .progress-wrap {
+    background: var(--border);
+    border-radius: 999px;
+    height: 8px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+  .progress-bar {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+  }
+  .question {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: border-color 0.12s, background 0.12s;
+  }
+  .option:hover:not(:disabled) { border-color: var(--accent); }
+  .option .key {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #eef2ff;
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .option.correct {
+    border-color: var(--correct);
+    background: var(--correct-bg);
+  }
+  .option.correct .key { background: var(--correct); color: #fff; }
+  .option.wrong {
+    border-color: var(--wrong);
+    background: var(--wrong-bg);
+  }
+  .option.wrong .key { background: var(--wrong); color: #fff; }
+  .option:disabled { cursor: default; }
+
+  .explanation {
+    margin-top: 20px;
+    padding: 16px;
+    border-radius: 10px;
+    background: #f8fafc;
+    border-left: 4px solid var(--accent);
+    font-size: 0.95rem;
+  }
+  .explanation.correct { border-left-color: var(--correct); }
+  .explanation.wrong { border-left-color: var(--wrong); }
+  .explanation .label {
+    font-weight: 700;
+    margin-bottom: 4px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .next-row { margin-top: 20px; text-align: right; }
+
+  /* Results */
+  .score-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--correct-bg);
+    color: var(--correct);
+  }
+  .score-circle .pct { font-size: 1.8rem; font-weight: 800; }
+  .score-circle .lbl { font-size: 0.75rem; color: var(--muted); }
+  .results h2 { text-align: center; margin-bottom: 4px; }
+  .results .subtitle { text-align: center; }
+  .stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .stat {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+  }
+  .stat .num { font-size: 1.3rem; font-weight: 700; }
+  .stat .cap { font-size: 0.8rem; color: var(--muted); }
+  .center { text-align: center; }
+  .history {
+    margin-top: 20px;
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+  .history table { width: 100%; border-collapse: collapse; }
+  .history th, .history td {
+    text-align: left;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .history th { color: var(--text); font-weight: 600; }
+  .hidden { display: none; }
+</style>
+</head>
+<body>
+  <div class="app">
+    <div class="card">
+
+      <!-- Start screen -->
+      <div id="start-screen">
+        <h1>📝 Company Knowledge Quiz</h1>
+        <p class="subtitle">Test your knowledge. Answer each question and see instant feedback.</p>
+        <div class="center">
+          <button class="btn" id="start-btn">Start Quiz</button>
+        </div>
+        <div class="history hidden" id="start-history"></div>
+      </div>
+
+      <!-- Quiz screen -->
+      <div id="quiz-screen" class="hidden">
+        <div class="topbar">
+          <span id="counter">Question 1 of 4</span>
+          <span>Score: <strong id="score">0</strong></span>
+        </div>
+        <div class="progress-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+        <div class="question" id="question-text"></div>
+        <div class="options" id="options"></div>
+        <div class="explanation hidden" id="explanation">
+          <div class="label" id="explanation-label">Explanation</div>
+          <div id="explanation-text"></div>
+        </div>
+        <div class="next-row">
+          <button class="btn hidden" id="next-btn">Next →</button>
+        </div>
+      </div>
+
+      <!-- Results screen -->
+      <div id="results-screen" class="hidden results">
+        <h2>Quiz Complete!</h2>
+        <div class="score-circle">
+          <div class="pct" id="final-pct">0%</div>
+          <div class="lbl">SCORE</div>
+        </div>
+        <p class="subtitle" id="final-message"></p>
+        <div class="stats">
+          <div class="stat"><div class="num" id="final-correct">0</div><div class="cap">Correct</div></div>
+          <div class="stat"><div class="num" id="final-total">0</div><div class="cap">Questions</div></div>
+        </div>
+        <div class="center">
+          <button class="btn" id="retry-btn">Try Again</button>
+        </div>
+        <div class="history" id="results-history"></div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  // =====================================================================
+  //  QUESTION BANK — add or edit questions here.
+  //  `answer` is the 0-based index of the correct option (0=A, 1=B, 2=C, 3=D)
+  // =====================================================================
+  const QUESTIONS = [
+    {
+      q: "Which of the following tickets CANNOT be used to log in to the CyberArk PSM server?",
+      options: ["Change Request (CR)", "i-Express (iEX)", "DEP", "None of the above"],
+      answer: 2,
+      explanation: "DEP is also a CyberArk PSM ticket, but it is only used for SIT/UAT environments, so it cannot be used for production PSM server login."
+    },
+    {
+      q: "On which platform can you create CR / iEX / ITSR tickets?",
+      options: ["UAMS", "DevConnect", "ITSM", "Marketplace"],
+      answer: 2,
+      explanation: "CR, iEX and ITSR tickets are all created on the ITSM platform."
+    },
+    {
+      q: "Which service from Marketplace can be used to check application server information?",
+      options: ["RunDB", "RunVM", "InvenSys", "RoboSys"],
+      answer: 2,
+      explanation: "InvenSys is the Marketplace service used to check application server information."
+    },
+    {
+      q: "Which service from Marketplace can be used to check the CPU & RAM configuration of a server?",
+      options: ["RunDB", "RunVM", "InvenSys", "RoboSys"],
+      answer: 1,
+      explanation: "RunVM is the Marketplace service used to check the CPU & RAM configuration of a server."
+    }
+  ];
+
+  // =====================================================================
+  //  Quiz logic
+  // =====================================================================
+  const STORAGE_KEY = "companyQuizHistory";
+  const KEYS = ["A", "B", "C", "D"];
+
+  let currentQuestions = [];
+  let currentIndex = 0;
+  let score = 0;
+
+  const startScreen = document.getElementById("start-screen");
+  const quizScreen = document.getElementById("quiz-screen");
+  const resultsScreen = document.getElementById("results-screen");
+
+  function shuffle(arr) {
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function getHistory() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveResult(correct, total) {
+    const history = getHistory();
+    history.push({ date: new Date().toISOString(), correct, total });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+  }
+
+  function renderHistory(container) {
+    const history = getHistory();
+    if (!history.length) return;
+    container.classList.remove("hidden");
+    const last = history.slice(-5).reverse();
+    const best = Math.max(...history.map(h => Math.round(h.correct / h.total * 100)));
+    const rows = last.map(h => {
+      const pct = Math.round(h.correct / h.total * 100);
+      const d = new Date(h.date).toLocaleDateString();
+      return `<tr><td>${d}</td><td>${h.correct}/${h.total}</td><td>${pct}%</td></tr>`;
+    }).join("");
+    container.innerHTML = `
+      <p style="margin-bottom:8px"><strong>Best score: ${best}%</strong> · Recent attempts:</p>
+      <table>
+        <thead><tr><th>Date</th><th>Score</th><th>%</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  function startQuiz() {
+    currentQuestions = shuffle(QUESTIONS);
+    currentIndex = 0;
+    score = 0;
+    startScreen.classList.add("hidden");
+    resultsScreen.classList.add("hidden");
+    quizScreen.classList.remove("hidden");
+    showQuestion();
+  }
+
+  function showQuestion() {
+    const q = currentQuestions[currentIndex];
+    document.getElementById("counter").textContent =
+      `Question ${currentIndex + 1} of ${currentQuestions.length}`;
+    document.getElementById("score").textContent = score;
+    document.getElementById("progress-bar").style.width =
+      `${(currentIndex / currentQuestions.length) * 100}%`;
+    document.getElementById("question-text").textContent = q.q;
+
+    const explanationEl = document.getElementById("explanation");
+    explanationEl.classList.add("hidden");
+    explanationEl.classList.remove("correct", "wrong");
+
+    const nextBtn = document.getElementById("next-btn");
+    nextBtn.classList.add("hidden");
+    nextBtn.textContent = currentIndex === currentQuestions.length - 1
+      ? "See Results →" : "Next →";
+
+    const order = shuffle(q.options.map((_, i) => i));
+    const optionsEl = document.getElementById("options");
+    optionsEl.innerHTML = "";
+    order.forEach((optIndex) => {
+      const btn = document.createElement("button");
+      btn.className = "option";
+      btn.innerHTML = `<span class="key">${KEYS[optIndex]}</span><span>${q.options[optIndex]}</span>`;
+      btn.addEventListener("click", () => answer(btn, optIndex));
+      optionsEl.appendChild(btn);
+    });
+  }
+
+  function answer(selectedBtn, selectedIndex) {
+    const q = currentQuestions[currentIndex];
+    const optionButtons = [...document.querySelectorAll(".option")];
+    optionButtons.forEach(b => (b.disabled = true));
+
+    const isCorrect = selectedIndex === q.answer;
+    if (isCorrect) score++;
+
+    // Highlight the correct answer, and mark the wrong pick if any
+    optionButtons.forEach((btn) => {
+      const realIndex = KEYS.indexOf(btn.querySelector(".key").textContent);
+      if (realIndex === q.answer) btn.classList.add("correct");
+    });
+    if (!isCorrect) selectedBtn.classList.add("wrong");
+
+    document.getElementById("score").textContent = score;
+
+    const explanationEl = document.getElementById("explanation");
+    explanationEl.classList.remove("hidden");
+    explanationEl.classList.add(isCorrect ? "correct" : "wrong");
+    document.getElementById("explanation-label").textContent =
+      isCorrect ? "✓ Correct!" : "✗ Incorrect";
+    document.getElementById("explanation-text").textContent = q.explanation;
+
+    document.getElementById("next-btn").classList.remove("hidden");
+  }
+
+  function next() {
+    currentIndex++;
+    if (currentIndex >= currentQuestions.length) {
+      finishQuiz();
+    } else {
+      showQuestion();
+    }
+  }
+
+  function finishQuiz() {
+    const total = currentQuestions.length;
+    const pct = Math.round(score / total * 100);
+    saveResult(score, total);
+
+    quizScreen.classList.add("hidden");
+    resultsScreen.classList.remove("hidden");
+
+    document.getElementById("final-pct").textContent = `${pct}%`;
+    document.getElementById("final-correct").textContent = score;
+    document.getElementById("final-total").textContent = total;
+
+    let msg = "";
+    if (pct === 100) msg = "Perfect! Outstanding work. 🎉";
+    else if (pct >= 80) msg = "Great job! You're nearly there. 👍";
+    else if (pct >= 50) msg = "Not bad — a bit more practice will help.";
+    else msg = "Keep studying and try again. 💪";
+    document.getElementById("final-message").textContent = msg;
+
+    renderHistory(document.getElementById("results-history"));
+  }
+
+  document.getElementById("start-btn").addEventListener("click", startQuiz);
+  document.getElementById("next-btn").addEventListener("click", next);
+  document.getElementById("retry-btn").addEventListener("click", startQuiz);
+
+  // Show history on start screen if any exists
+  renderHistory(document.getElementById("start-history"));
+</script>
+</body>
+</html>
