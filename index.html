@@ -431,6 +431,104 @@
       options: ["w01tcpsdb1a", "a03gcpsdb2a", "x03bcpsstg1a", "x01gcpsapp1a"],
       answer: 1,
       explanation: "'g' indicates PROD and 'db' indicates a database server, so a03gcpsdb2a is the PROD database server."
+    },
+
+    // ---- Linux commands ----
+    {
+      q: "Which of the following symbols represents the home directory?",
+      options: [".", "..", "~", "/"],
+      answer: 2,
+      explanation: "~ (tilde) is a shortcut for the current user's home directory."
+    },
+    {
+      q: "Which of the following symbols represents the current directory?",
+      options: ["~", "..", "/", "."],
+      answer: 3,
+      explanation: ". (single dot) refers to the current directory."
+    },
+    {
+      q: "Which of the following symbols represents the parent directory?",
+      options: [".", "~", "..", "/"],
+      answer: 2,
+      explanation: ".. (double dot) refers to the parent directory (one level up)."
+    },
+    {
+      q: "Which of the following commands changes the current directory?",
+      options: ["ls", "cd", "mv", "ps"],
+      answer: 1,
+      explanation: "cd (change directory) changes the current directory."
+    },
+    {
+      q: "Which of the following commands changes to your home directory?",
+      options: ["cd ..", "cd ~", "cd /", "cd ."],
+      answer: 1,
+      explanation: "cd ~ changes to your home directory, because ~ is the home directory shortcut."
+    },
+    {
+      q: "Which of the following commands lists the files in a directory?",
+      options: ["cat", "ls", "grep", "ps"],
+      answer: 1,
+      explanation: "ls lists the contents of a directory."
+    },
+    {
+      q: "Which of the following commands lists all files including hidden ones?",
+      options: ["ls -l", "ls -a", "ls -t", "ls -r"],
+      answer: 1,
+      explanation: "ls -a lists all files, including hidden files (files starting with a dot)."
+    },
+    {
+      q: "Which of the following commands displays the full contents of a file?",
+      options: ["tail", "grep", "cat", "touch"],
+      answer: 2,
+      explanation: "cat prints the entire contents of a file to the terminal."
+    },
+    {
+      q: "Which of the following commands views a file page by page?",
+      options: ["cat", "tail", "less", "touch"],
+      answer: 2,
+      explanation: "less lets you scroll through a file page by page (press q to quit)."
+    },
+    {
+      q: "Which of the following commands shows the last few lines of a file?",
+      options: ["head", "cat", "grep", "tail"],
+      answer: 3,
+      explanation: "tail shows the last lines of a file (10 lines by default)."
+    },
+    {
+      q: "Which of the following commands is used to move or rename a file?",
+      options: ["cp", "mv", "rm", "touch"],
+      answer: 1,
+      explanation: "mv moves a file to a new location or renames it."
+    },
+    {
+      q: "Which of the following commands lists running processes?",
+      options: ["ls", "ps", "cat", "grep"],
+      answer: 1,
+      explanation: "ps lists the currently running processes."
+    },
+    {
+      q: "Which of the following commands searches for a text pattern in a file?",
+      options: ["find", "cat", "grep", "ls"],
+      answer: 2,
+      explanation: "grep searches for lines that match a given pattern."
+    },
+    {
+      q: "Which of the following commands deletes a file?",
+      options: ["mv", "touch", "rm", "cat"],
+      answer: 2,
+      explanation: "rm removes (deletes) a file."
+    },
+    {
+      q: "Which of the following commands opens the vi text editor?",
+      options: ["cat", "vi", "less", "tail"],
+      answer: 1,
+      explanation: "vi opens the vi text editor."
+    },
+    {
+      q: "Which of the following commands creates an empty file?",
+      options: ["mkdir", "cat", "touch", "mv"],
+      answer: 2,
+      explanation: "touch creates an empty file (or updates the timestamp of an existing one)."
     }
   ];
 
