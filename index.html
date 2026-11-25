@@ -273,10 +273,10 @@
   // =====================================================================
   const QUESTIONS = [
     {
-      q: "Which of the following tickets CANNOT be used to log in to the CyberArk PSM server?",
+      q: "Which of the following tickets CANNOT be used to log in to the production CyberArk PSM server?",
       options: ["Change Request (CR)", "i-Express (iEX)", "DEP", "None of the above"],
       answer: 2,
-      explanation: "DEP is also a CyberArk PSM ticket, but it is only used for SIT/UAT environments, so it cannot be used for production PSM server login."
+      explanation: "DEP is also a CyberArk PSM ticket, but it is only used for SIT/UAT (non-production) environments, so it cannot be used to log in to the production PSM server."
     },
     {
       q: "On which platform can you create CR / iEX / ITSR tickets?",
@@ -382,7 +382,7 @@
     nextBtn.textContent = currentIndex === currentQuestions.length - 1
       ? "See Results →" : "Next →";
 
-    const order = shuffle(q.options.map((_, i) => i));
+    const order = q.options.map((_, i) => i); // options stay in A/B/C/D order
     const optionsEl = document.getElementById("options");
     optionsEl.innerHTML = "";
     order.forEach((optIndex) => {
