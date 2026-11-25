@@ -221,6 +221,30 @@
     border-bottom: 1px solid var(--border);
   }
   .history th { color: var(--text); font-weight: 600; }
+  .categories {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .cat-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    cursor: pointer;
+    transition: border-color 0.12s;
+  }
+  .cat-btn:hover { border-color: var(--accent); }
+  .cat-emoji { font-size: 1.4rem; }
+  .cat-info { display: flex; flex-direction: column; }
+  .cat-label { font-weight: 600; color: var(--text); }
+  .cat-count { font-size: 0.8rem; color: var(--muted); }
   .hidden { display: none; }
 </style>
 </head>
@@ -231,10 +255,8 @@
       <!-- Start screen -->
       <div id="start-screen">
         <h1>📝 Company Knowledge Quiz</h1>
-        <p class="subtitle">Test your knowledge. Answer each question and see instant feedback.</p>
-        <div class="center">
-          <button class="btn" id="start-btn">Start Quiz</button>
-        </div>
+        <p class="subtitle">Choose a category to start.</p>
+        <div class="categories" id="category-list"></div>
         <div class="history hidden" id="start-history"></div>
       </div>
 
@@ -270,6 +292,7 @@
         </div>
         <div class="center">
           <button class="btn" id="retry-btn">Try Again</button>
+          <button class="btn secondary" id="home-btn" style="margin-left:8px">Change Category</button>
         </div>
         <div class="history" id="results-history"></div>
       </div>
@@ -282,7 +305,8 @@
   //  QUESTION BANK — add or edit questions here.
   //  `answer` is the 0-based index of the correct option (0=A, 1=B, 2=C, 3=D)
   // =====================================================================
-  const QUESTIONS = [
+  const QUESTIONS = (function () {
+    const TICKETING = [
     // ---- General / ticketing ----
     {
       q: "Which of the following tickets CANNOT be used to log in to the production CyberArk PSM server?",
@@ -307,8 +331,10 @@
       options: ["RunDB", "RunVM", "InvenSys", "RoboSys"],
       answer: 1,
       explanation: "RunVM is the Marketplace service used to check the CPU & RAM configuration of a server."
-    },
+    }
+    ];
 
+    const HOSTNAME = [
     // ---- Hostname: server type ----
     {
       q: "Which of the following is the server type of hostname x01gcpsapp1a?",
@@ -431,8 +457,10 @@
       options: ["w01tcpsdb1a", "a03gcpsdb2a", "x03bcpsstg1a", "x01gcpsapp1a"],
       answer: 1,
       explanation: "'g' indicates PROD and 'db' indicates a database server, so a03gcpsdb2a is the PROD database server."
-    },
+    }
+    ];
 
+    const LINUX = [
     // ---- Linux commands ----
     {
       q: "Which of the following symbols represents the home directory?",
@@ -530,7 +558,15 @@
       answer: 2,
       explanation: "touch creates an empty file (or updates the timestamp of an existing one)."
     }
-  ];
+    ];
+
+    const tagged = (cat, arr) => arr.map(q => Object.assign({ cat }, q));
+    return [
+      ...tagged("ticketing", TICKETING),
+      ...tagged("hostname", HOSTNAME),
+      ...tagged("linux", LINUX)
+    ];
+  })();
 
   // =====================================================================
   //  Quiz logic
@@ -593,8 +629,39 @@
       </table>`;
   }
 
-  function startQuiz() {
-    currentQuestions = shuffle(QUESTIONS);
+  const CATEGORIES = [
+    { id: "all",       label: "All Questions",  emoji: "🎯" },
+    { id: "ticketing", label: "Ticketing",      emoji: "🎫" },
+    { id: "hostname",  label: "Hostname",       emoji: "🖥️" },
+    { id: "linux",     label: "Linux Commands", emoji: "🐧" }
+  ];
+
+  let currentCategory = "all";
+
+  function getQuestions(category) {
+    if (!category || category === "all") return QUESTIONS;
+    return QUESTIONS.filter(q => q.cat === category);
+  }
+
+  function renderCategories() {
+    const list = document.getElementById("category-list");
+    list.innerHTML = "";
+    CATEGORIES.forEach(cat => {
+      const n = getQuestions(cat.id).length;
+      const btn = document.createElement("button");
+      btn.className = "cat-btn";
+      btn.innerHTML =
+        `<span class="cat-emoji">${cat.emoji}</span>` +
+        `<span class="cat-info"><span class="cat-label">${cat.label}</span>` +
+        `<span class="cat-count">${n} questions</span></span>`;
+      btn.addEventListener("click", () => startQuiz(cat.id));
+      list.appendChild(btn);
+    });
+  }
+
+  function startQuiz(category) {
+    currentCategory = category || "all";
+    currentQuestions = shuffle(getQuestions(currentCategory));
     currentIndex = 0;
     score = 0;
     startScreen.classList.add("hidden");
@@ -691,11 +758,16 @@
     renderHistory(document.getElementById("results-history"));
   }
 
-  document.getElementById("start-btn").addEventListener("click", startQuiz);
   document.getElementById("next-btn").addEventListener("click", next);
-  document.getElementById("retry-btn").addEventListener("click", startQuiz);
+  document.getElementById("retry-btn").addEventListener("click", () => startQuiz(currentCategory));
+  document.getElementById("home-btn").addEventListener("click", () => {
+    startScreen.classList.remove("hidden");
+    quizScreen.classList.add("hidden");
+    resultsScreen.classList.add("hidden");
+  });
 
-  // Show history on start screen if any exists
+  // Render category buttons and history on the start screen
+  renderCategories();
   renderHistory(document.getElementById("start-history"));
 </script>
 </body>
