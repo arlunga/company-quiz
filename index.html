@@ -306,8 +306,8 @@
   //  `answer` is the 0-based index of the correct option (0=A, 1=B, 2=C, 3=D)
   // =====================================================================
   const QUESTIONS = (function () {
-    const TICKETING = [
-    // ---- General / ticketing ----
+    const GENERAL = [
+    // ---- General ----
     {
       q: "Which of the following tickets CANNOT be used to log in to the production CyberArk PSM server?",
       options: ["Change Request (CR)", "i-Express (iEX)", "DEP", "None of the above"],
@@ -331,6 +331,30 @@
       options: ["RunDB", "RunVM", "InvenSys", "RoboSys"],
       answer: 1,
       explanation: "RunVM is the Marketplace service used to check the CPU & RAM configuration of a server."
+    },
+    {
+      q: "Which of the following is the maximum duration of an i-Express (iEX) ticket?",
+      options: ["1 hour", "2 hours", "6 hours", "24 hours"],
+      answer: 2,
+      explanation: "An i-Express (iEX) ticket has a maximum duration of 6 hours."
+    },
+    {
+      q: "Which of the following is the maximum day range of a DEP ticket?",
+      options: ["Any time", "2 weeks", "1 month", "3 days"],
+      answer: 2,
+      explanation: "A DEP ticket has a maximum range of 1 month."
+    },
+    {
+      q: "Which of the following is the default port number for MariaDB?",
+      options: ["3306", "6603", "4404", "4405"],
+      answer: 1,
+      explanation: "The default port number for MariaDB is 6603."
+    },
+    {
+      q: "Which of the following platforms can be used to request project access?",
+      options: ["UAMS", "DevConnect", "Marketplace", "ITSM"],
+      answer: 1,
+      explanation: "Project access is requested via DevConnect."
     }
     ];
 
@@ -562,7 +586,7 @@
 
     const tagged = (cat, arr) => arr.map(q => Object.assign({ cat }, q));
     return [
-      ...tagged("ticketing", TICKETING),
+      ...tagged("general", GENERAL),
       ...tagged("hostname", HOSTNAME),
       ...tagged("linux", LINUX)
     ];
@@ -631,7 +655,7 @@
 
   const CATEGORIES = [
     { id: "all",       label: "All Questions",  emoji: "🎯" },
-    { id: "ticketing", label: "Ticketing",      emoji: "🎫" },
+    { id: "general",   label: "General",        emoji: "📋" },
     { id: "hostname",  label: "Hostname",       emoji: "🖥️" },
     { id: "linux",     label: "Linux Commands", emoji: "🐧" }
   ];
