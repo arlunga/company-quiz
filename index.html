@@ -283,6 +283,7 @@
   //  `answer` is the 0-based index of the correct option (0=A, 1=B, 2=C, 3=D)
   // =====================================================================
   const QUESTIONS = [
+    // ---- General / ticketing ----
     {
       q: "Which of the following tickets CANNOT be used to log in to the production CyberArk PSM server?",
       options: ["Change Request (CR)", "i-Express (iEX)", "DEP", "None of the above"],
@@ -306,6 +307,130 @@
       options: ["RunDB", "RunVM", "InvenSys", "RoboSys"],
       answer: 1,
       explanation: "RunVM is the Marketplace service used to check the CPU & RAM configuration of a server."
+    },
+
+    // ---- Hostname: server type ----
+    {
+      q: "Which of the following is the server type of hostname x01gcpsapp1a?",
+      options: ["Windows", "Linux", "AIX", "macOS"],
+      answer: 1,
+      explanation: "The first character indicates the server type: a = AIX, x = Linux, w = Windows. Here 'x' means Linux."
+    },
+    {
+      q: "Which of the following is the server type of hostname w03gcpsdb2a?",
+      options: ["Windows", "Linux", "AIX", "macOS"],
+      answer: 0,
+      explanation: "The first character indicates the server type: a = AIX, x = Linux, w = Windows. Here 'w' means Windows."
+    },
+    {
+      q: "Which of the following is the server type of hostname a01bcpsstg4a?",
+      options: ["Windows", "Linux", "AIX", "macOS"],
+      answer: 2,
+      explanation: "The first character indicates the server type: a = AIX, x = Linux, w = Windows. Here 'a' means AIX."
+    },
+    {
+      q: "Which of the following is the server type of hostname w01tcpsapp1a?",
+      options: ["Windows", "Linux", "AIX", "macOS"],
+      answer: 0,
+      explanation: "The first character indicates the server type: a = AIX, x = Linux, w = Windows. Here 'w' means Windows."
+    },
+    {
+      q: "Which of the following is the server type of hostname a03gcpsdb2a?",
+      options: ["Windows", "Linux", "AIX", "macOS"],
+      answer: 2,
+      explanation: "The first character indicates the server type: a = AIX, x = Linux, w = Windows. Here 'a' means AIX."
+    },
+    {
+      q: "Which of the following is the server type of hostname x03bcpsstg1a?",
+      options: ["Windows", "Linux", "AIX", "macOS"],
+      answer: 1,
+      explanation: "The first character indicates the server type: a = AIX, x = Linux, w = Windows. Here 'x' means Linux."
+    },
+
+    // ---- Hostname: environment ----
+    {
+      q: "Which of the following is the environment of hostname x01scpsapp1a?",
+      options: ["DEV", "SIT", "UAT", "PROD"],
+      answer: 2,
+      explanation: "The character after the hosting number indicates the environment: t = DEV, b = SIT, s = UAT, g = PROD. Here 's' means UAT."
+    },
+    {
+      q: "Which of the following is the environment of hostname w01tcpsdb2a?",
+      options: ["DEV", "SIT", "UAT", "PROD"],
+      answer: 0,
+      explanation: "The character after the hosting number indicates the environment: t = DEV, b = SIT, s = UAT, g = PROD. Here 't' means DEV."
+    },
+    {
+      q: "Which of the following is the environment of hostname a03gcpsapp3a?",
+      options: ["DEV", "SIT", "UAT", "PROD"],
+      answer: 3,
+      explanation: "The character after the hosting number indicates the environment: t = DEV, b = SIT, s = UAT, g = PROD. Here 'g' means PROD."
+    },
+    {
+      q: "Which of the following is the environment of hostname x03bcpsapp1a?",
+      options: ["DEV", "SIT", "UAT", "PROD"],
+      answer: 1,
+      explanation: "The character after the hosting number indicates the environment: t = DEV, b = SIT, s = UAT, g = PROD. Here 'b' means SIT."
+    },
+
+    // ---- Hostname: hosting country ----
+    {
+      q: "Which of the following is the hosting country of hostname x03tcpsdb5a?",
+      options: ["HK", "SG", "China", "India"],
+      answer: 0,
+      explanation: "The two-digit number after the server type indicates the hosting location: 01 = SG, 03 = HK. Here '03' means Hong Kong."
+    },
+    {
+      q: "Which of the following is the hosting country of hostname w01gcpsapp1a?",
+      options: ["HK", "SG", "China", "India"],
+      answer: 1,
+      explanation: "The two-digit number after the server type indicates the hosting location: 01 = SG, 03 = HK. Here '01' means Singapore."
+    },
+    {
+      q: "Which of the following is the hosting country of hostname a03bcpsdb1a?",
+      options: ["HK", "SG", "China", "India"],
+      answer: 0,
+      explanation: "The two-digit number after the server type indicates the hosting location: 01 = SG, 03 = HK. Here '03' means Hong Kong."
+    },
+
+    // ---- Hostname: server role ----
+    {
+      q: "Which of the following is the role of hostname x01gcpsdb1a?",
+      options: ["Application server", "Database server", "Staging server", "File server"],
+      answer: 1,
+      explanation: "The role segment indicates the server role: app = application server, db = database server, stg = staging server. Here 'db' means database server."
+    },
+    {
+      q: "Which of the following is the role of hostname w03gcpsstg1a?",
+      options: ["Application server", "Database server", "Staging server", "File server"],
+      answer: 2,
+      explanation: "The role segment indicates the server role: app = application server, db = database server, stg = staging server. Here 'stg' means staging server."
+    },
+    {
+      q: "Which of the following is the role of hostname a01gcpsapp1a?",
+      options: ["Application server", "Database server", "Staging server", "File server"],
+      answer: 0,
+      explanation: "The role segment indicates the server role: app = application server, db = database server, stg = staging server. Here 'app' means application server."
+    },
+
+    // ---- Hostname: reverse (identify the hostname) ----
+    {
+      q: "Which of the following hostnames indicates a Linux server?",
+      options: ["x01gcpsapp1a", "w01gcpsapp1a", "a01gcpsapp1a", "w03gcpsdb2a"],
+      answer: 0,
+      explanation: "The first character 'x' indicates a Linux server."
+    },
+    {
+      q: "Which of the following hostnames is hosted in Hong Kong (HK)?",
+      options: ["x01gcpsapp1a", "w03gcpsdb2a", "a01gcpsapp1a", "x01tcpsdb1a"],
+      answer: 1,
+      explanation: "The two-digit number '03' indicates the server is hosted in Hong Kong."
+    },
+    {
+      q: "Which of the following hostnames is a PROD database server?",
+      options: ["w01tcpsdb1a", "a03gcpsdb2a", "x03bcpsstg1a", "x01gcpsapp1a"],
+      answer: 1,
+      explanation: "'g' indicates PROD and 'db' indicates a database server, so a03gcpsdb2a is the PROD database server."
     }
   ];
 
